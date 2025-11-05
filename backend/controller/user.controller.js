@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs"
 const registerUser = async (req, res) => {
     const error = validationResult(req)
     if (!error.isEmpty()) {
-        return res.status(400).json({ error: error.array() })
+        return res.status(401).json({ error: error.array() })
     }
 
     const { username, email, password } = req.body;
@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
 
     const allreadyExistUser = await userModel.findOne({email});
     if(allreadyExistUser){
-        return res.status(400).send("User allready exist");
+        return res.status(401).send("User allready exist");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -37,4 +37,37 @@ const registerUser = async (req, res) => {
     }
 };
 
-export { registerUser }
+const loginUser = async (req, res) =>{
+    const error = validationResult(req);
+
+    if(!error.isEmpty()){
+        return res.status(401).json({ error: error.array()})
+    }
+
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        throw new Error("All filed are required");
+    }
+
+    const allreadyExistUser = await userModel.findOne({ email });
+
+    if(!allreadyExistUser){
+        return res.status(401).json({message: 'User not found !'});
+    }
+
+    const isValidPassword = await bcrypt.compare(password, allreadyExistUser.password);
+
+    if(!isValidPassword){
+        return res.status(401).json({message: "Invalid Password"});
+    }
+
+    res.status(200).json({
+        _id: allreadyExistUser._id,
+        email: allreadyExistUser.email,
+        username: allreadyExistUser.username,
+    });
+
+}
+
+export { registerUser, loginUser }
