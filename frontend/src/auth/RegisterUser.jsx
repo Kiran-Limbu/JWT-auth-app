@@ -1,8 +1,7 @@
-import React from 'react'
 
 const RegisterUser = () => {
   return (
-    <div>
+    <div className='w-full h-screen'>
       
     </div>
   )
