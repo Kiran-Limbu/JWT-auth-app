@@ -4,19 +4,21 @@ import bcrypt from "bcryptjs"
 import generateAuthToken from "../utils/createToken.js";
 
 const registerUser = async (req, res) => {
-    const error = validationResult(req)
-    if (!error.isEmpty()) {
-        return res.status(401).json({ error: error.array() })
-    }
-
     const { username, email, password } = req.body;
+
     if (!username || !email || !password) {
-        throw new Error("All filed are required");
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required",
+        });
     }
 
     const allreadyExistUser = await userModel.findOne({ email });
     if (allreadyExistUser) {
-        return res.status(401).send("User allready exist");
+        return res.status(400).json({
+            success: false,
+            message: "User allready exist"
+        });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -40,16 +42,14 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-    const error = validationResult(req);
-
-    if (!error.isEmpty()) {
-        return res.status(401).json({ error: error.array() })
-    }
 
     const { email, password } = req.body;
 
     if (!email || !password) {
-        throw new Error("All filed are required");
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required",
+        });
     }
 
     const allreadyExistUser = await userModel.findOne({ email });
@@ -84,8 +84,7 @@ const getUserProfile = async (req, res) => {
             email: user.email,
         })
     } else {
-        res.status(400);
-        throw new Error("User not found !");
+        res.status(400).json({ message: "User not found !" });
     }
 }
 
@@ -113,17 +112,13 @@ const updateUserProfile = async (req, res) => {
         })
         res.json(updateUserProfile);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({ message: "User not found" });
     }
 }
 
 const logoutUser = async (req, res) => {
-    // res.cookie('jwt','',{
-    //     httpOnly: true,
-    //     expires: new Date(0),
-    // });
     res.clearCookie('jwt');
-    
+
     res.status(200).json({ message: "User logged out successfully" });
 }
 
