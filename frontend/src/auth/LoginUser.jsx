@@ -23,6 +23,7 @@ const LoginUser = () => {
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate("/profile");
+       window.alert("Congratulations you are authroized user");
     } catch (error) {
       toast.error(error?.data?.message || error.errro);
     }
@@ -60,7 +61,11 @@ const LoginUser = () => {
             />
             <div className="fixed z-99 translate-y-3 md:translate-x-60 translate-x-55">
               <button onClick={() => setTogglePassword(!togglePassword)}>
-                {togglePassword ? <FaRegEye /> : <FaEyeSlash />}
+                {togglePassword ? (
+                  <FaRegEye size={20} />
+                ) : (
+                  <FaEyeSlash size={20} />
+                )}
               </button>
             </div>
           </div>

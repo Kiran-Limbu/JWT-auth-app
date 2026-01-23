@@ -1,9 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import RegisterUser from "./auth/RegisterUser";
-import LandingPage from "./component/LandingPage";
+import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./component/ProtectedRoute";
 import LoginUser from "./auth/LoginUser";
 import { ToastContainer } from 'react-toastify';
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
   return (
@@ -27,7 +28,7 @@ const App = () => {
 
         {/* Protected Route For User */}
         <Route path="" element={<ProtectedRoute />}>
-          <Route path="/profile" />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </div>
