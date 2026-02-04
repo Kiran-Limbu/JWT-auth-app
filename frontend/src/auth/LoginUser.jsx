@@ -60,7 +60,7 @@ const LoginUser = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <div className="fixed z-99 translate-y-3 md:translate-x-60 translate-x-55">
-              <button onClick={() => setTogglePassword(!togglePassword)}>
+              <button type="button" onClick={() => setTogglePassword(!togglePassword)}>
                 {togglePassword ? (
                   <FaRegEye size={20} />
                 ) : (

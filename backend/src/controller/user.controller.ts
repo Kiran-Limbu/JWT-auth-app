@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
-import generateAuthToken from "../utils/createToken";
-import type { CreateUserDTO, LoginUserDTO } from "../dots/user.dto";
-import userModel from "../models/user.model";
+import generateAuthToken from "../utils/createToken.ts";
+import type { CreateUserDTO, LoginUserDTO } from "../dots/user.dto.ts";
+import userModel from "../models/user.model.ts";
 
 const registerUser = async (
   req: Request<{}, {}, CreateUserDTO>,
@@ -38,7 +38,7 @@ const registerUser = async (
       username: newUser.username,
       email: newUser.email,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(400).send(error.message);
   }
@@ -60,7 +60,7 @@ const loginUser = async (req: Request<{}, {}, LoginUserDTO>, res: Response) => {
     return res.status(401).json({ message: "User not found !" });
   }
 
-  const isValidPassword = await bcrypt.compare(
+  const isValidPassword =  bcrypt.compare(
     password,
     allreadyExistUser.password,
   );

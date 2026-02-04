@@ -3,8 +3,11 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectToDB from "./src/config/db";
-import userRoute from "./src/routes/user.route"
+import connectToDB from "./src/config/db.ts";
+import userRoute from "./src/routes/user.route.ts"
+import uploadRoute from "./src/routes/imageUpload.route.ts"
+import path from "path";
+
 
 dotenv.config();
 connectToDB();
@@ -18,9 +21,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users/", userRoute);
-console.log("hello")
+
+//URL for uploaded Image;
+app.use("/api/upload/", uploadRoute);
+
+const  __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname +  '/uploads')));
+
 const server = http.createServer(app);
 
 server.listen(port, () => {
   console.log(`Server is listening on PORT ${port}`);
 });
+
