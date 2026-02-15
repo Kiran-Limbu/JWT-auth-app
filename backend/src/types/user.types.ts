@@ -1,15 +1,15 @@
-export interface CreateUserDTO {
+export interface CreateUserTypes {
   username: string;
   email: string;
   password: string;
 }
 
-export interface LoginUserDTO {
+export interface LoginUserTypes {
   email: string;
   password: string;
 }
 
-export interface JwtPayloadDTO{
+export interface JwtPayloadTypes {
   userId: string;
 }
 

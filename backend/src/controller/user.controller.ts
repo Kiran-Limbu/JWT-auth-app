@@ -1,20 +1,17 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import generateAuthToken from "../utils/createToken.ts";
-import type { CreateUserDTO, LoginUserDTO } from "../dots/user.dto.ts";
 import userModel from "../models/user.model.ts";
+import type { CreateUserTypes, LoginUserTypes } from "../types/user.types.ts";
 
 const registerUser = async (
-  req: Request<{}, {}, CreateUserDTO>,
+  req: Request<{}, {}, CreateUserTypes>,
   res: Response,
 ) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, userImg } = req.body;
 
   if (!username || !email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "All fields are required",
-    });
+    return res.status(400).json({message: "All fields are required"});
   }
 
   const allreadyExistUser = await userModel.findOne({ email });
@@ -44,7 +41,7 @@ const registerUser = async (
   }
 };
 
-const loginUser = async (req: Request<{}, {}, LoginUserDTO>, res: Response) => {
+const loginUser = async (req: Request<{}, {}, LoginUserTypes>, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {

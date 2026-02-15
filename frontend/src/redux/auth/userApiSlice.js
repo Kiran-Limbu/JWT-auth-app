@@ -1,6 +1,7 @@
 import { apiSlice } from "../api/apiSlice";
 
 const USER_URL = import.meta.env.VITE_USER_URL;
+const UPLOAD_URL = import.meta.env.VITE_UPLOADS_URL;
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -41,6 +42,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
             })
         }),
 
+        uploadUserImg: builder.mutation({
+            query: (formData) => ({
+                url: `${UPLOAD_URL}`,
+                method: "POST",
+                body: formData,
+            })
+        })
+
     })
 });
 
@@ -50,4 +59,5 @@ export const {
     useLogoutMutation,
     useGetUserProfileQuery,
     useUpdateUserProfileMutation,
+    useUploadUserImgMutation,
 } = userApiSlice;

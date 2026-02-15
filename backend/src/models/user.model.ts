@@ -13,11 +13,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     require: true,
-  },
-  userImg: {
-    type: String,
-    require: true,
-  },
+  }
 });
 
 const userModel = mongoose.model("User", userSchema);

@@ -15,6 +15,7 @@ const RegisterUser = () => {
   const [togglePassword, setTogglePassword] = useState(false);
 
   const [register] = useRegisterMutation();
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const RegisterUser = () => {
          navigate("/profile");
       } catch (error) {
         toast.error(error?.data?.message || error.error);
-      }
+        }
     }
   };
   return (

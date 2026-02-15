@@ -7,11 +7,13 @@ const route = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb: any) {
-    cb(null, '/uploads')
+    cb(null, 'uploads/')
   },
   filename: function (req, file: any, cb: any) {
+    const extname = path.extname(file.originalname)
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix)
+    cb(null, file.fieldname + '-' + uniqueSuffix + extname)
+     // Creates: "image-1762660427980-652247236.avif"
   }
 })
 
@@ -40,7 +42,7 @@ route.post("/", async (req, res) =>{
         } else if (req.file){
               res.status(201).send({
                 message: "Image uploaded sucessfully",
-                image: `/${req.file.path}`
+                image: `/${req.file.path.replace(/\\/g, '/')}`
             });
         } else{
             res.status(400).send({message: "No image provided"});

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import type { NextFunction, Request, Response } from "express";
 import userModel from "../models/user.model.ts";
-import type { JwtPayloadDTO } from "../dots/user.dto.ts";
+import type { JwtPayloadDTO } from "../types/user.types.ts";
 
 const authUser = async (req: Request, res: Response, next: NextFunction) => {
   let token: string;

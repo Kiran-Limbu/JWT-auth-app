@@ -20,13 +20,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/users/", userRoute);
+app.use("/api/users", userRoute);
 
 //URL for uploaded Image;
-app.use("/api/upload/", uploadRoute);
+app.use("/api/uploads", uploadRoute);
 
-const  __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname +  '/uploads')));
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const server = http.createServer(app);
 

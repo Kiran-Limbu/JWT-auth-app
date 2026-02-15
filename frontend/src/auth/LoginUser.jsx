@@ -25,7 +25,7 @@ const LoginUser = () => {
       navigate("/profile");
        window.alert("Congratulations you are authroized user");
     } catch (error) {
-      toast.error(error?.data?.message || error.errro);
+      toast.error(error?.data?.message || error.error);
     }
   };
   return (
