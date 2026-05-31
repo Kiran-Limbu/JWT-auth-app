@@ -2,16 +2,16 @@ import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import generateAuthToken from "../utils/createToken.ts";
 import userModel from "../models/user.model.ts";
-import type { CreateUserTypes, LoginUserTypes } from "../types/user.types.ts";
+import type { AuthRequest, CreateUserTypes, LoginUserTypes } from "../types/user.types.ts";
 
 const registerUser = async (
   req: Request<{}, {}, CreateUserTypes>,
   res: Response,
 ) => {
-  const { username, email, password, userImg } = req.body;
+  const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    return res.status(400).json({message: "All fields are required"});
+    return res.status(400).json({ message: "All fields are required" });
   }
 
   const allreadyExistUser = await userModel.findOne({ email });
@@ -25,15 +25,17 @@ const registerUser = async (
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
 
-  const newUser = new userModel({ username, email, password: hashPassword });
+  const newUser = await userModel.create({ username, email, password: hashPassword });
+  console.log(newUser);
+
 
   try {
-    await newUser.save();
-    generateAuthToken(res, newUser._id);
-    res.status(201).json({
+    generateAuthToken(res, newUser.id);
+    res.status(201).json({  
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
+    
     });
   } catch (error: any) {
     console.error(error);
@@ -41,26 +43,25 @@ const registerUser = async (
   }
 };
 
-const loginUser = async (req: Request<{}, {}, LoginUserTypes>, res: Response) => {
+const loginUser = async (
+  req: Request<{}, {}, LoginUserTypes>,
+  res: Response,
+) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "All fields are required",
-    });
+    return res.status(400).json({message: "All fields are required"});
   }
 
-  const allreadyExistUser = await userModel.findOne({ email });
+  const allreadyExistUser = (await userModel.findOne({
+    email,
+  })) as LoginUserTypes;
 
   if (!allreadyExistUser) {
     return res.status(401).json({ message: "User not found !" });
   }
 
-  const isValidPassword =  bcrypt.compare(
-    password,
-    allreadyExistUser.password,
-  );
+  const isValidPassword = await bcrypt.compare(password, allreadyExistUser.password);
 
   if (!isValidPassword) {
     return res.status(401).json({ message: "Invalid Password" });
@@ -72,10 +73,11 @@ const loginUser = async (req: Request<{}, {}, LoginUserTypes>, res: Response) =>
     _id: allreadyExistUser._id,
     email: allreadyExistUser.email,
     username: allreadyExistUser.username,
+
   });
 };
 
-const getUserProfile = async (req: Request, res: Response) => {
+const getUserProfile = async (req: AuthRequest, res: Response) => {
   const user = await userModel.findById(req.user._id);
 
   if (user) {
@@ -89,7 +91,7 @@ const getUserProfile = async (req: Request, res: Response) => {
   }
 };
 
-const updateUserProfile = async (req: Request, res: Response) => {
+const updateUserProfile = async (req: AuthRequest, res: Response) => {
   try {
     const user = await userModel.findById(req.user._id);
     if (user) {
@@ -110,7 +112,6 @@ const updateUserProfile = async (req: Request, res: Response) => {
       username: updatedUser.username,
       email: updatedUser.email,
     });
-    res.json(updateUserProfile);
   } catch (error) {
     res.status(400).json({ message: "User not found" });
   }

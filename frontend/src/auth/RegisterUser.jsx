@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { useRegisterMutation } from "../redux/auth/userApiSlice";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "../redux/auth/authSlice";
 
 const RegisterUser = () => {
   const [username, setUserName] = useState("");
@@ -14,9 +11,10 @@ const RegisterUser = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [togglePassword, setTogglePassword] = useState(false);
 
-  const [register] = useRegisterMutation();
+  const useRegisterMutation = () =>{
+    console.log("hello");
+  }
   
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   
@@ -33,8 +31,7 @@ const RegisterUser = () => {
       return toast.error("Password don't match !");
     } else {
       try {
-        const res = await register({ username, email, password }).unwrap();
-        dispatch(setCredentials({ ...res }));
+      
          navigate("/profile");
       } catch (error) {
         toast.error(error?.data?.message || error.error);

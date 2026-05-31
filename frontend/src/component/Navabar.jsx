@@ -1,20 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
-import { useLogoutMutation } from "../redux/auth/userApiSlice";
+// import { useLogoutMutation } from "../redux/auth/userApiSlice";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { logout } from "../redux/auth/authSlice";
+// import { useDispatch } from "react-redux";
+// import { logout } from "../redux/auth/authSlice";
 
 const Navabar = () => {
-  const [logoutApiCall] = useLogoutMutation();
+  // const [logoutApiCall] = useLogoutMutation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const logoutHandle = async (e) => {
     e.preventDefault();
     try {
-      await logoutApiCall().unwrap();
-      dispatch(logout());
+      // await logoutApiCall().unwrap();
+      // dispatch(logout());
       navigate("/");
       toast.success("User Logout Sucessfullly");
     } catch (error) {

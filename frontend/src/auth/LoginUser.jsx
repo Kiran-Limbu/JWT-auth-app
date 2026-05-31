@@ -1,31 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { useLoginMutation } from "../redux/auth/userApiSlice";
 import { toast } from "react-toastify";
-import { setCredentials } from "../redux/auth/authSlice";
-import { useDispatch } from "react-redux";
+// import { AuthGlobalContex } from "../contex/AuthContex";
+import axios from "axios";
+import SetCredientials from "./AuthLocalStore";
 
 const LoginUser = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [togglePassword, setTogglePassword] = useState("");
 
-  const [login] = useLoginMutation();
-  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [togglePassword, setTogglePassword] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  //get the localstorage item of user data
+  // const getUserData = JSON.parse(localStorage.getItem("userInfo"));
+  // console.log(getUserData);
+  // console.log(getUserData.email);
+
+  
+
+  if (!loading) {
+    return <div>Loading......</div>;
+  }
 
   const submitHandle = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/users/login`,
+        formData,
+      );
+
+      setFormData("");
+      SetCredientials(res.data);
+      console.log(res);
+      toast.success("User login Success");
+      setLoading(false);
       navigate("/profile");
-       window.alert("Congratulations you are authroized user");
     } catch (error) {
-      toast.error(error?.data?.message || error.error);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
   return (
@@ -44,8 +64,9 @@ const LoginUser = () => {
               className="block py-3 px-7 md:text-xl text-md bg-zinc-200 rounded-md"
               type="email"
               placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
             />
           </div>
           <div className="font-semibold flex flex-col justify-center">
@@ -56,11 +77,15 @@ const LoginUser = () => {
               className="block py-3 px-7 md:text-xl text-md bg-zinc-200 rounded-md"
               type={togglePassword ? "text" : "password"}
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
             <div className="fixed z-99 translate-y-3 md:translate-x-60 translate-x-55">
-              <button type="button" onClick={() => setTogglePassword(!togglePassword)}>
+              <button
+                type="button"
+                onClick={() => setTogglePassword(!togglePassword)}
+              >
                 {togglePassword ? (
                   <FaRegEye size={20} />
                 ) : (

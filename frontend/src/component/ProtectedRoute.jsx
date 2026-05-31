@@ -1,10 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { useSelector } from "react-redux"
 
 const ProtectedRoute = () => {
-     const { userInfo } = useSelector((state) => state.auth);
+  const getUserData = JSON.parse(localStorage.getItem("userInfo"));
 
-  return userInfo ? <Outlet /> : <Navigate to="/register" replace={true} />
+  return getUserData ? <Outlet /> : <Navigate to="/register" replace={true} />
 }
 
 export default ProtectedRoute
